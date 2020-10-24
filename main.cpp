@@ -540,13 +540,13 @@ void cajero(){
             clavea+=arch[i];
         }
         cont=0,largo=ingreso.length();
-        for(int i = 0; arch[i] != 44;i++){
-            nombre2+=arch[i];
+        for(int i = 0; ingreso[i] != 44;i++){
+            nombre2+=ingreso[i];
             cont++;
         }
 
         for(int i = cont;i<largo;i++){
-            clave2+=arch[i];
+            clave2+=ingreso[i];
         }
         if((nombre == nombre2)and(clave2==clavea)){
             igual=true;
@@ -607,7 +607,7 @@ void cajero(){
         do{
         cout<<"|***************************************************|"<<endl;
         cout<<"|          Iniciar como Usuaio                      |"<<endl;
-        cout<<"|Ingrese N de cedula yclave en el siguiente fomato: |"<<endl;
+        cout<<"|Ingrese N de cedula y clave en el siguiente fomato:|"<<endl;
         cout<<"| <Cedula>,<clave>  (sin espacios)                  |"<<endl;
         cout<<"|***************************************************|"<<endl;
         cin>>ingreso;
@@ -621,24 +621,24 @@ void cajero(){
         linea=0;
         while(getline(infile,arch2)){
             cont=0;
-            largo=arch2.length();
+            aux=cambiardec2(arch2,4);
+            largo=aux.length();
             document2="";
             clave2="";
             plata="";
-            for(int i=0;arch2[i] !=44;i++){
-                document2+=arch2[i];
+            for(int i=0;aux[i] !=44;i++){
+                document2+=aux[i];
                 cont++;
             }
-            for(int i=cont;arch2[i]==44;i++){
-                clave2+=arch2[i];
+            for(int i=cont;aux[i]==44;i++){
+                clave2+=aux[i];
                 cont++;
             }
             for(int i=cont;i<largo;i++){
-                plata+=arch2[i];
+                plata+=aux[i];
             }
 
         if((document2==documento)and(clave==clave2)){
-            aux=arch2;
             igual=true;
             break;
         }
@@ -647,6 +647,8 @@ void cajero(){
         infile.close();
         }
         while(igual==false);
+        int opusu;
+        do{
         system("cls");
         cout<<"|***********************************************|"<<endl;
         cout<<"|            Bienvenido Usuario                 |"<<endl;
@@ -655,6 +657,23 @@ void cajero(){
         cout<<"| (1) Consultar saldo                           |"<<endl;
         cout<<"| (2) Retirar dinero                            |"<<endl;
         cout<<"|***********************************************|"<<endl;
+        cin>>opusu;
+        }
+        while(opusu != 1 and opusu != 2);
+
+        if (opusu ==1){
+            int platalon=plata.length(),plataint=0;
+            for(int i = 0; i<platalon;i++){
+                plataint*=10+(plata[i]-48);
+            }
+            plataint-=1000;
+            cout<<"Su saldo acutal es de: "<<plataint<<endl;
+        }
+        if(opusu == 2){
+
+
+        }
+
         break;
     }
     }
