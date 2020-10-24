@@ -1,4 +1,3 @@
-/*! 2. Escritura de archivos */
 #include <fstream>
 #include <iostream>
 #include <string.h>
@@ -508,7 +507,7 @@ void cajero(){
         //-----------------------------------------
         ifstream infile;
         string nombre,clavea,arch,nombre2,clave2;
-        infile.open("../practica3/BD/Administrador.txt");
+        infile.open("../practica3/BD/administrador.txt");
 
         if (!infile.is_open())
         {
@@ -580,7 +579,7 @@ void cajero(){
             cin>>ingreso;
             ingreso=separador2(ingreso,4);
             ofstream outfile;
-
+            //AQUI TIENE QUE CAMBIAR LA DIRECCION
             outfile.open("../practica3/BD/usuarios.txt",ios::app);
             if (!outfile.is_open())
             {
@@ -601,12 +600,61 @@ void cajero(){
         break;
 
     case 2:{
+        system("cls");
+        bool igual =false;
+        int cont=0,largo,linea=0;
+        string ingreso,documento,document2,clave,clave2,arch2,aux,plata;
+        do{
         cout<<"|***************************************************|"<<endl;
         cout<<"|          Iniciar como Usuaio                      |"<<endl;
         cout<<"|Ingrese N de cedula yclave en el siguiente fomato: |"<<endl;
         cout<<"| <Cedula>,<clave>  (sin espacios)                  |"<<endl;
         cout<<"|***************************************************|"<<endl;
+        cin>>ingreso;
+        ifstream infile;
+        infile.open("../practica3/BD/usuarios.txt");
+        if (!infile.is_open())
+        {
+          cout << "Error abriendo el archivo" << endl;
+          exit(1);
+        }
+        linea=0;
+        while(getline(infile,arch2)){
+            cont=0;
+            largo=arch2.length();
+            document2="";
+            clave2="";
+            plata="";
+            for(int i=0;arch2[i] !=44;i++){
+                document2+=arch2[i];
+                cont++;
+            }
+            for(int i=cont;arch2[i]==44;i++){
+                clave2+=arch2[i];
+                cont++;
+            }
+            for(int i=cont;i<largo;i++){
+                plata+=arch2[i];
+            }
 
+        if((document2==documento)and(clave==clave2)){
+            aux=arch2;
+            igual=true;
+            break;
+        }
+        linea++;
+        }
+        infile.close();
+        }
+        while(igual==false);
+        system("cls");
+        cout<<"|***********************************************|"<<endl;
+        cout<<"|            Bienvenido Usuario                 |"<<endl;
+        cout<<"|***********************************************|"<<endl;
+        cout<<"| Escoja una opcion:                            |"<<endl;
+        cout<<"| (1) Consultar saldo                           |"<<endl;
+        cout<<"| (2) Retirar dinero                            |"<<endl;
+        cout<<"|***********************************************|"<<endl;
         break;
     }
     }
@@ -617,6 +665,7 @@ void administrador(){
     string newarch;
     usuario=cambiar(usuario);
     newarch=separador2(usuario,4);
+    //AQUI TIENE QUE CAMBIAR LA DIRECCION
     outfile.open("../practica3/BD/administrador.txt");
     if (!outfile.is_open())
     {
