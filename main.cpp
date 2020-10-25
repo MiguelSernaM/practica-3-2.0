@@ -1,4 +1,3 @@
-/*! 2. Escritura de archivos */
 #include <fstream>
 #include <iostream>
 #include <string.h>
@@ -6,6 +5,7 @@ using namespace std;
 int escribir();
 void cajero();
 void administrador();
+void reemplazar(string,int);
 string leer();
 string cambiar(string);
 string binario(int);
@@ -20,12 +20,11 @@ string debinaletra(string);
 string cambiardec2(string,int);
 //NOTA: LAS FUNCIONES DE LECTURA Y ESCRITURA SON LEER();ESCRIBIR(); REESCRIBIR(); REESCRIBIR2();
 // PDT Se que me quedo un poquito desordenado :C
+//APLICACION: ADMINISTRADOR : carlos,4321
 int main () {
 int n,caso,opc;
-escribir();
 bool activo =true;
-cout<<"Ingrese el numero de la semilla"<<endl;
-cin>>n;
+escribir();
 while(activo){
 string archivo,arch2;
 cout<<"Que desea hacer?"<<endl;
@@ -36,6 +35,8 @@ cout<<"(4) Salir del programa "<<endl;
 cin>>caso;
 switch (caso) {
 case 1:{
+    cout<<"Ingrese el numero de la semilla"<<endl;
+    cin>>n;
     cout<<"(1) Codificar por metodo 1"<<endl;
     cout<<"(2) Codificar por metodo 2"<<endl;
     cin>>opc;
@@ -56,6 +57,9 @@ case 2:{
 break;
 }
 case 3:{
+    cajero();
+}
+case 4:{
     activo=false;
     break;
 }
@@ -468,8 +472,6 @@ string cambiardec2(string archivo, int n){
 
     copia+=n;
     }
-    cout<<"Decodificando: "<<nuevo<<endl;
-    cout<<"-----------------------------"<<endl;
     nuevo=debinaletra(nuevo);
     return nuevo;
 }
@@ -508,7 +510,7 @@ void cajero(){
         //-----------------------------------------
         ifstream infile;
         string nombre,clavea,arch,nombre2,clave2;
-        infile.open("../practica3/BD/Administrador.txt");
+        infile.open("../practica3/BD/administrador.txt");
 
         if (!infile.is_open())
         {
@@ -533,21 +535,25 @@ void cajero(){
         clave2="";
         int cont=0,largo=arch.length();
         for(int i = 0; arch[i] != 44;i++){
+            if(arch[i] != 44){
             nombre+=arch[i];
             cont++;
+            }
         }
 
-        for(int i = cont;i<largo;i++){
+        for(int i = cont+1;i<largo;i++){
             clavea+=arch[i];
         }
         cont=0,largo=ingreso.length();
-        for(int i = 0; arch[i] != 44;i++){
-            nombre2+=arch[i];
+        for(int i = 0; ingreso[i] != 44;i++){
+            if(ingreso[i] != 44){
+            nombre2+=ingreso[i];
             cont++;
+            }
         }
 
-        for(int i = cont;i<largo;i++){
-            clave2+=arch[i];
+        for(int i = cont+1;i<largo;i++){
+            clave2+=ingreso[i];
         }
         if((nombre == nombre2)and(clave2==clavea)){
             igual=true;
@@ -572,15 +578,16 @@ void cajero(){
         while(adm != 1 and adm != 0);
         if(adm == 1){
             system("cls");
-            string documento,clave,saldo;
+            string documento,clave,saldo,poner;
             cout<<"Creando usuario"<<endl;
             cout<<"Ingrese el nuevo usuario en el siguiente formato"<<endl;
             cout<<"(Sin espacios)"<<endl;
             cout<<"<cedula>,<clave>,<saldo>"<<endl;
             cin>>ingreso;
+            ingreso=cambiar(ingreso);
             ingreso=separador2(ingreso,4);
             ofstream outfile;
-
+            //AQUI TIENE QUE CAMBIAR LA DIRECCION
             outfile.open("../practica3/BD/usuarios.txt",ios::app);
             if (!outfile.is_open())
             {
@@ -601,11 +608,130 @@ void cajero(){
         break;
 
     case 2:{
+        system("cls");
+        bool igual =false;
+        int cont=0,largo,linea=0;
+        string ingreso,documento,document2,clave,clave2,arch2,aux,plata;
+        do{
         cout<<"|***************************************************|"<<endl;
-        cout<<"|          Iniciar como Usuaio                      |"<<endl;
-        cout<<"|Ingrese N de cedula yclave en el siguiente fomato: |"<<endl;
+        cout<<"|          Iniciar como Usuario                     |"<<endl;
+        cout<<"|Ingrese N de cedula y clave en el siguiente fomato:|"<<endl;
         cout<<"| <Cedula>,<clave>  (sin espacios)                  |"<<endl;
         cout<<"|***************************************************|"<<endl;
+        cin>>ingreso;
+        ifstream infile;
+        infile.open("../practica3/BD/usuarios.txt");
+        if (!infile.is_open())
+        {
+          cout << "Error abriendo el archivo" << endl;
+          exit(1);
+        }
+        linea=0;
+        largo=ingreso.length();
+        for(int i=0;ingreso[i] != 44;i++){
+            documento+=ingreso[i];
+            cont++;
+        }
+        for(int i = cont+1;i < largo;i++){
+            clave+=ingreso[i];
+        }
+
+        while(getline(infile,arch2)){
+            cont=0;
+            aux=cambiardec2(arch2,4);
+            largo=aux.length();
+            document2="";
+            clave2="";
+            plata="";
+            for(int i = 0; aux[i] !=44;i++){
+                document2+=aux[i];
+                cont++;
+            }
+
+            for(int i=cont+1;aux[i]!=44;i++){
+                if(aux[i] !=44){
+                clave2+=aux[i];
+                cont++;
+                }
+            }
+            for(int i=cont+2;i<largo;i++){
+                plata+=aux[i];
+            }
+
+        if((document2==documento)and(clave==clave2)){
+            igual=true;
+            break;
+        }
+        linea++;
+        }
+        infile.close();
+        }
+        while(igual==false);
+        int opusu;
+        do{
+        system("cls");
+        cout<<"|***********************************************|"<<endl;
+        cout<<"|            Bienvenido Usuario                 |"<<endl;
+        cout<<"|***********************************************|"<<endl;
+        cout<<"| Escoja una opcion:                            |"<<endl;
+        cout<<"| (1) Consultar saldo                           |"<<endl;
+        cout<<"| (2) Retirar dinero                            |"<<endl;
+        cout<<"| (3) Salir                                     |"<<endl;
+        cout<<"|***********************************************|"<<endl;
+        cin>>opusu;
+        }
+        while(opusu != 1 and opusu != 2);
+
+        if (opusu ==1){
+            string insert;
+            int plataint;
+            plataint=atoi(plata.c_str());
+            plataint-=1000;
+            //Tengamosle fe a este metodo xD
+            std::string s = std::to_string(plataint);
+            cout<<"Su saldo acutal es de: "<<plataint<<endl;
+            insert+=document2;
+            insert+=+",";
+            insert+=clave2;
+            insert+=",";
+            insert+=s;
+            insert=cambiar(insert);
+            insert= separador2(insert,4);
+            reemplazar(insert,linea);
+        }
+        if(opusu == 2){
+            string insert;
+            int retiro;
+            int plataint;
+            plataint=atoi(plata.c_str());
+            plataint-=1000;
+            cout<<"Su saldo es de: "<<plataint<<endl;
+            do{
+            cout<<"Ingrese la cantidad de dinero que desea retirar"<<endl;
+            cin >>retiro;
+            if(retiro > plataint){
+                cout<<"La cantidad ingresada es mayor a su saldo"<<endl;
+            }
+            }
+            while(retiro > plataint);
+            plataint-=retiro;
+            cout<<"Retiro exitoso"<<endl;
+            //Tengamosle fe a este metodo xD
+            std::string s = std::to_string(plataint);
+            cout<<"Su saldo acutal es de: "<<plataint<<endl;
+            insert+=document2;
+            insert+=+",";
+            insert+=clave2;
+            insert+=",";
+            insert+=s;
+            insert=cambiar(insert);
+            insert= separador2(insert,4);
+            reemplazar(insert,linea);
+        }
+        if(opusu==3){
+            exit(1);
+        }
+
 
         break;
     }
@@ -617,6 +743,7 @@ void administrador(){
     string newarch;
     usuario=cambiar(usuario);
     newarch=separador2(usuario,4);
+    //AQUI TIENE QUE CAMBIAR LA DIRECCION
     outfile.open("../practica3/BD/administrador.txt");
     if (!outfile.is_open())
     {
@@ -627,5 +754,34 @@ void administrador(){
     outfile.close();
 }
 
+void reemplazar(string insert,int linea){
+    int cont=0;
+    string arch2,definitivo;
+    ifstream infile;
+    infile.open("../practica3/BD/usuarios.txt");
+    if (!infile.is_open())
+    {
+      cout << "Error abriendo el archivo" << endl;
+      exit(1);
+    }
+    while(getline(infile,arch2)){
+    if(linea==cont){
+        arch2=insert;
+    }
+    definitivo+=arch2;
+    definitivo+="\n";
+    cont++;
+    }
+    infile.close();
+    ofstream outfile;
+    outfile.open("../practica3/BD/usuarios.txt");
+    if (!outfile.is_open())
+    {
+      cout << "Error abriendo el archivo" << endl;
+      exit(1);
+    }
+    outfile<<definitivo<<endl;
+    outfile.close();
+}
 
 
