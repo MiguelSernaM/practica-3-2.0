@@ -5,6 +5,7 @@ using namespace std;
 int escribir();
 void cajero();
 void administrador();
+void reemplazar(string,int);
 string leer();
 string cambiar(string);
 string binario(int);
@@ -19,12 +20,11 @@ string debinaletra(string);
 string cambiardec2(string,int);
 //NOTA: LAS FUNCIONES DE LECTURA Y ESCRITURA SON LEER();ESCRIBIR(); REESCRIBIR(); REESCRIBIR2();
 // PDT Se que me quedo un poquito desordenado :C
+//APLICACION: ADMINISTRADOR : carlos,4321
 int main () {
 int n,caso,opc;
-escribir();
 bool activo =true;
-cout<<"Ingrese el numero de la semilla"<<endl;
-cin>>n;
+escribir();
 while(activo){
 string archivo,arch2;
 cout<<"Que desea hacer?"<<endl;
@@ -35,6 +35,8 @@ cout<<"(4) Salir del programa "<<endl;
 cin>>caso;
 switch (caso) {
 case 1:{
+    cout<<"Ingrese el numero de la semilla"<<endl;
+    cin>>n;
     cout<<"(1) Codificar por metodo 1"<<endl;
     cout<<"(2) Codificar por metodo 2"<<endl;
     cin>>opc;
@@ -674,6 +676,7 @@ void cajero(){
         cout<<"| Escoja una opcion:                            |"<<endl;
         cout<<"| (1) Consultar saldo                           |"<<endl;
         cout<<"| (2) Retirar dinero                            |"<<endl;
+        cout<<"| (3) Salir                                     |"<<endl;
         cout<<"|***********************************************|"<<endl;
         cin>>opusu;
         }
@@ -681,23 +684,54 @@ void cajero(){
 
         if (opusu ==1){
             string insert;
-            int platalon=plata.length(),plataint=0;
-            for(int i = 0; i<platalon;i++){
-                plataint*=10+(plata[i]-48);
-            }
+            int plataint;
+            plataint=atoi(plata.c_str());
             plataint-=1000;
             //Tengamosle fe a este metodo xD
             std::string s = std::to_string(plataint);
             cout<<"Su saldo acutal es de: "<<plataint<<endl;
-            insert=document2+","+clave2+","+s;
+            insert+=document2;
+            insert+=+",";
+            insert+=clave2;
+            insert+=",";
+            insert+=s;
             insert=cambiar(insert);
             insert= separador2(insert,4);
-
+            reemplazar(insert,linea);
         }
         if(opusu == 2){
-
-
+            string insert;
+            int retiro;
+            int plataint;
+            plataint=atoi(plata.c_str());
+            plataint-=1000;
+            cout<<"Su saldo es de: "<<plataint<<endl;
+            do{
+            cout<<"Ingrese la cantidad de dinero que desea retirar"<<endl;
+            cin >>retiro;
+            if(retiro > plataint){
+                cout<<"La cantidad ingresada es mayor a su saldo"<<endl;
+            }
+            }
+            while(retiro > plataint);
+            plataint-=retiro;
+            cout<<"Retiro exitoso"<<endl;
+            //Tengamosle fe a este metodo xD
+            std::string s = std::to_string(plataint);
+            cout<<"Su saldo acutal es de: "<<plataint<<endl;
+            insert+=document2;
+            insert+=+",";
+            insert+=clave2;
+            insert+=",";
+            insert+=s;
+            insert=cambiar(insert);
+            insert= separador2(insert,4);
+            reemplazar(insert,linea);
         }
+        if(opusu==3){
+            exit(1);
+        }
+
 
         break;
     }
@@ -720,5 +754,34 @@ void administrador(){
     outfile.close();
 }
 
+void reemplazar(string insert,int linea){
+    int cont=0;
+    string arch2,definitivo;
+    ifstream infile;
+    infile.open("../practica3/BD/usuarios.txt");
+    if (!infile.is_open())
+    {
+      cout << "Error abriendo el archivo" << endl;
+      exit(1);
+    }
+    while(getline(infile,arch2)){
+    if(linea==cont){
+        arch2=insert;
+    }
+    definitivo+=arch2;
+    definitivo+="\n";
+    cont++;
+    }
+    infile.close();
+    ofstream outfile;
+    outfile.open("../practica3/BD/usuarios.txt");
+    if (!outfile.is_open())
+    {
+      cout << "Error abriendo el archivo" << endl;
+      exit(1);
+    }
+    outfile<<definitivo<<endl;
+    outfile.close();
+}
 
 
