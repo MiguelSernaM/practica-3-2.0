@@ -55,6 +55,9 @@ case 2:{
 break;
 }
 case 3:{
+    cajero();
+}
+case 4:{
     activo=false;
     break;
 }
@@ -467,8 +470,6 @@ string cambiardec2(string archivo, int n){
 
     copia+=n;
     }
-    cout<<"Decodificando: "<<nuevo<<endl;
-    cout<<"-----------------------------"<<endl;
     nuevo=debinaletra(nuevo);
     return nuevo;
 }
@@ -532,20 +533,24 @@ void cajero(){
         clave2="";
         int cont=0,largo=arch.length();
         for(int i = 0; arch[i] != 44;i++){
+            if(arch[i] != 44){
             nombre+=arch[i];
             cont++;
+            }
         }
 
-        for(int i = cont;i<largo;i++){
+        for(int i = cont+1;i<largo;i++){
             clavea+=arch[i];
         }
         cont=0,largo=ingreso.length();
         for(int i = 0; ingreso[i] != 44;i++){
+            if(ingreso[i] != 44){
             nombre2+=ingreso[i];
             cont++;
+            }
         }
 
-        for(int i = cont;i<largo;i++){
+        for(int i = cont+1;i<largo;i++){
             clave2+=ingreso[i];
         }
         if((nombre == nombre2)and(clave2==clavea)){
@@ -571,12 +576,13 @@ void cajero(){
         while(adm != 1 and adm != 0);
         if(adm == 1){
             system("cls");
-            string documento,clave,saldo;
+            string documento,clave,saldo,poner;
             cout<<"Creando usuario"<<endl;
             cout<<"Ingrese el nuevo usuario en el siguiente formato"<<endl;
             cout<<"(Sin espacios)"<<endl;
             cout<<"<cedula>,<clave>,<saldo>"<<endl;
             cin>>ingreso;
+            ingreso=cambiar(ingreso);
             ingreso=separador2(ingreso,4);
             ofstream outfile;
             //AQUI TIENE QUE CAMBIAR LA DIRECCION
@@ -606,7 +612,7 @@ void cajero(){
         string ingreso,documento,document2,clave,clave2,arch2,aux,plata;
         do{
         cout<<"|***************************************************|"<<endl;
-        cout<<"|          Iniciar como Usuaio                      |"<<endl;
+        cout<<"|          Iniciar como Usuario                     |"<<endl;
         cout<<"|Ingrese N de cedula y clave en el siguiente fomato:|"<<endl;
         cout<<"| <Cedula>,<clave>  (sin espacios)                  |"<<endl;
         cout<<"|***************************************************|"<<endl;
@@ -619,6 +625,15 @@ void cajero(){
           exit(1);
         }
         linea=0;
+        largo=ingreso.length();
+        for(int i=0;ingreso[i] != 44;i++){
+            documento+=ingreso[i];
+            cont++;
+        }
+        for(int i = cont+1;i < largo;i++){
+            clave+=ingreso[i];
+        }
+
         while(getline(infile,arch2)){
             cont=0;
             aux=cambiardec2(arch2,4);
@@ -626,15 +641,18 @@ void cajero(){
             document2="";
             clave2="";
             plata="";
-            for(int i=0;aux[i] !=44;i++){
+            for(int i = 0; aux[i] !=44;i++){
                 document2+=aux[i];
                 cont++;
             }
-            for(int i=cont;aux[i]==44;i++){
+
+            for(int i=cont+1;aux[i]!=44;i++){
+                if(aux[i] !=44){
                 clave2+=aux[i];
                 cont++;
+                }
             }
-            for(int i=cont;i<largo;i++){
+            for(int i=cont+2;i<largo;i++){
                 plata+=aux[i];
             }
 
@@ -662,12 +680,19 @@ void cajero(){
         while(opusu != 1 and opusu != 2);
 
         if (opusu ==1){
+            string insert;
             int platalon=plata.length(),plataint=0;
             for(int i = 0; i<platalon;i++){
                 plataint*=10+(plata[i]-48);
             }
             plataint-=1000;
+            //Tengamosle fe a este metodo xD
+            std::string s = std::to_string(plataint);
             cout<<"Su saldo acutal es de: "<<plataint<<endl;
+            insert=document2+","+clave2+","+s;
+            insert=cambiar(insert);
+            insert= separador2(insert,4);
+
         }
         if(opusu == 2){
 
