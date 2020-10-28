@@ -755,7 +755,7 @@ void administrador(){
 }
 
 void reemplazar(string insert,int linea){
-    int cont=0;
+   int cont=0;
     string arch2,definitivo;
     ifstream infile;
     infile.open("../practica3/BD/usuarios.txt");
@@ -767,9 +767,14 @@ void reemplazar(string insert,int linea){
     while(getline(infile,arch2)){
     if(linea==cont){
         arch2=insert;
+    if(arch2.length() >1){
+        definitivo+="\n";
+    }
+    }
+    if(arch2.length() < 3 ){
+        break;
     }
     definitivo+=arch2;
-    definitivo+="\n";
     cont++;
     }
     infile.close();
